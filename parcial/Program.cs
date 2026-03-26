@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-
 Dictionary<string, Habitacion> habitaciones = new Dictionary<string, Habitacion>();
 bool correcto;
 int op;
 do
 {
-    Console.WriteLine("Bienvenido al menu");
+    Console.WriteLine("MENU HOTEL");
     Console.WriteLine("1. Agregar habitacion");
     Console.WriteLine("2. Modificar habitacion");
     Console.WriteLine("3. Eliminar habitacion");
@@ -18,7 +17,7 @@ do
     Console.WriteLine("9. Mostrar la habitacion con menor cantidad de noches reservada");
     Console.WriteLine("10. Mostrar el valor total estimado de reservaciones");
     Console.WriteLine("11. Salir");
-    Console.WriteLine("Ingrese la opcion en numeros");
+    Console.Write("Ingrese la opcion: ");
     correcto = int.TryParse(Console.ReadLine(), out op);
     if (!correcto)
     {
@@ -30,126 +29,184 @@ do
         {
             case 1:
                 string op1;
-                bool correcto1, correcto2;
                 do
                 {
                     Habitacion h = new Habitacion();
                     Console.WriteLine("Ingrese el codigo de habitacion");
-                    Codigo = Console.ReadLine();
-                    if (habitaciones.ContainsKey(Codigo))
+                    h.Codigo = Console.ReadLine();
+                    if (habitaciones.ContainsKey(h.Codigo))
                     {
-                        Console.WriteLine("Error, el codigo ya existe en otra habitacion");
+                        Console.WriteLine("Error, el codigo ya existe");
                     }
                     else
                     {
                         Console.WriteLine("Ingrese el tipo de habitacion");
                         h.Tipo = Console.ReadLine();
-                        Console.WriteLine("Ingrese el precio por noche");
-                        correcto2 = double.TryParse(Console.ReadLine(), out h.PrecioporNoche);
-                        if (!correcto)
+                        bool pCorrecto;
+                        do
                         {
-                            Console.WriteLine("Error debe ingresar los numeros enteros");
-                        }
-                        else
+                            Console.WriteLine("Ingrese el precio por noche");
+                            pCorrecto = double.TryParse(Console.ReadLine(), out h.PrecioporNoche);
+                        } while (!pCorrecto || h.PrecioporNoche < 0);
+                        bool nCorrecto;
+                        do
                         {
                             Console.WriteLine("Cantidad de noches reservadas");
-                            correcto1 = int.TryParse(Console.ReadLine(), out h.CantidaddeNoches);
-                            if (!correcto1)
-                            {
-                                Console.WriteLine("Debe ingresar la cantidad en numero enteros");
-                            }
-                            else
-                            {
-                                Console.WriteLine("Estado de la habitacion");
-                                h.Estado = Console.ReadLine();
-                            }
-                        }
+                            nCorrecto = int.TryParse(Console.ReadLine(), out h.CantidaddeNoches);
+                        } while (!nCorrecto || h.CantidaddeNoches < 0);
+                        Console.WriteLine("Estado de la habitacion");
+                        h.Estado = Console.ReadLine();
+                        habitaciones.Add(h.Codigo, h);
+                        Console.WriteLine("SE HA AGREGADO CON EXITO");
                     }
-                    Codigo = h.Codigo;
-                    habitaciones.Add(Codigo, h);
-                    Console.WriteLine("SE HA AGREGADO CON EXITO");
                     Console.WriteLine("Desea ingresar otra habitacion? (s/n)");
                     op1 = Console.ReadLine();
-                } while (op1 != "n");
+                } while (op1 != "n" && op1 != "N");
                 break;
             case 2:
-                Console.WriteLine("Ingrese el codigo de la habitacion que desea modificar");
+                Console.WriteLine("Ingrese el codigo a modificar");
                 string buscar = Console.ReadLine();
                 if (habitaciones.ContainsKey(buscar))
                 {
-                    Console.WriteLine("Ingrese el nuevo tipo de habitacion");
+                    Console.WriteLine("Nuevo tipo:");
                     habitaciones[buscar].Tipo = Console.ReadLine();
-                    Console.WriteLine("Ingrese el precio por noche");
-                    habitaciones[buscar].PrecioporNoche = double.Parse(Console.ReadLine());
-                    Console.WriteLine("Ingrese la cantidad de noches");
-                    habitaciones[buscar].CantidaddeNoches = int.Parse(Console.ReadLine());
-                    Console.WriteLine("Ingrese el estado");
+                    double pMod;
+                    do 
+                    { 
+                        Console.WriteLine("Nuevo precio:"); 
+                    }while (!double.TryParse(Console.ReadLine(), out pMod) || pMod < 0);
+                    habitaciones[buscar].PrecioporNoche = pMod;
+                    int nMod;
+                    do 
+                    {
+                        Console.WriteLine("Nuevas noches:"); 
+                    }while (!int.TryParse(Console.ReadLine(), out nMod) || nMod < 0);
+                    habitaciones[buscar].CantidaddeNoches = nMod;
+                    Console.WriteLine("Nuevo estado:");
                     habitaciones[buscar].Estado = Console.ReadLine();
-                    Console.WriteLine("SE HA MODIFICADO CON EXITO");
+                    Console.WriteLine("MODIFICADO CON EXITO");
                 }
-                else
+                else 
                 {
-                    Console.WriteLine("No se ha encontrado un producto con ese codigo");
+                    Console.WriteLine("No encontrado"); 
                 }
                 break;
             case 3:
-                string buscar1;
-                Console.WriteLine("Ingrese el codigo de habitacion");
-                buscar1 = Console.ReadLine();
-                if (habitaciones.ContainsKey(buscar1))
+                Console.WriteLine("Codigo a eliminar:");
+                string eliminar = Console.ReadLine();
+                if (habitaciones.ContainsKey(eliminar))
                 {
-                    habitaciones.Remove(buscar1);
-                    Console.WriteLine("SE HA ELIMINADO CON EXITO");
+                    habitaciones.Remove(eliminar);
+                    Console.WriteLine("ELIMINADO");
                 }
-                else
+                else 
                 {
-                    Console.WriteLine("No se ha encontrado un producto con ese nombre");
+                    Console.WriteLine("No encontrado"); 
                 }
                 break;
             case 4:
+                Console.WriteLine("Codigo a buscar:");
+                string bCod = Console.ReadLine();
+                if (habitaciones.ContainsKey(bCod))
                 {
-                    Console.WriteLine("Ingrese el codigo de la habitacion");
-                    string buscar2 = Console.ReadLine();
-                    if (habitaciones.ContainsKey(buscar2))
-                    {
-                        Habitacion h = habitaciones[buscar2];
-                        Console.WriteLine($"Codigo {h.Codigo}");
-                        Console.WriteLine($"Tipo {h.Tipo}");
-                        Console.WriteLine($"precio por noche {h.PrecioporNoche}");
-                        Console.WriteLine($"Cantidad de noches {h.CantidaddeNoches}");
-                        Console.WriteLine($"Estado {h.Estado}");
-                    }
+                    Habitacion hab = habitaciones[bCod];
+                    Console.WriteLine($"Codigo: {hab.Codigo}, Tipo: {hab.Tipo}, Precio: {hab.PrecioporNoche}, Noches: {hab.CantidaddeNoches}, Estado: {hab.Estado}");
+                }
+                else 
+                {
+                    Console.WriteLine("No existe"); 
                 }
                 break;
             case 5:
-                foreach (var h in habitaciones)
+                foreach (var hab in habitaciones.Values)
                 {
-                    Console.WriteLine(h);
+                    Console.WriteLine($"Hab: {hab.Codigo} {hab.Tipo}  Q{hab.PrecioporNoche} {hab.Estado}");
                 }
                 break;
             case 6:
-
+                Console.WriteLine("Codigo para reserva:");
+                string cRes = Console.ReadLine();
+                if (habitaciones.ContainsKey(cRes))
+                {
+                    if (habitaciones[cRes].Estado == "Disponible" || habitaciones[cRes].Estado == "disponible")
+                    {
+                        Console.WriteLine("Cuantas noches?");
+                        int nuevas;
+                        int.TryParse(Console.ReadLine(), out nuevas);
+                        habitaciones[cRes].CantidaddeNoches += nuevas;
+                        habitaciones[cRes].Estado = "Ocupada";
+                        Console.WriteLine($"Subtotal: {nuevas * habitaciones[cRes].PrecioporNoche}");
+                    }
+                    else 
+                    {
+                        Console.WriteLine("No esta disponible"); 
+                    }
+                }
+                else 
+                {
+                    Console.WriteLine("No encontrada"); 
+                }
                 break;
             case 7:
+                Console.WriteLine("Codigo para salida:");
+                string cSal = Console.ReadLine();
+                if (habitaciones.ContainsKey(cSal))
+                {
+                    habitaciones[cSal].Estado = "Disponible";
+                    habitaciones[cSal].CantidaddeNoches = 0;
+                    Console.WriteLine("Salida registrada");
+                }
                 break;
             case 8:
-
+                if (habitaciones.Count > 0)
+                {
+                    Habitacion max = new Habitacion();
+                    bool esPrimero = true;
+                    foreach (var h in habitaciones.Values)
+                    {
+                        if (esPrimero) 
+                        {
+                            max = h; 
+                            esPrimero = false; 
+                        }
+                        else if (h.PrecioporNoche > max.PrecioporNoche) 
+                        {
+                            max = h; 
+                        }
+                    }
+                    Console.WriteLine($"La mas cara es {max.Codigo} (${max.PrecioporNoche})");
+                }
                 break;
             case 9:
+                if (habitaciones.Count > 0)
+                {
+                    Habitacion min = new Habitacion();
+                    bool esPrimero = true;
+                    foreach (var h in habitaciones.Values)
+                    {
+                        if (esPrimero) 
+                        {
+                            min = h; 
+                            esPrimero = false; 
+                        }
+                        else if (h.CantidaddeNoches < min.CantidaddeNoches) 
+                        {
+                            min = h; 
+                        }
+                    }
+                    Console.WriteLine($"Menos noches: {min.Codigo} ({min.CantidaddeNoches} noches)");
+                }
                 break;
             case 10:
                 double suma = 0;
-                foreach (var h in habitaciones)
+                foreach (var h in habitaciones.Values)
                 {
                     suma += h.ValorEstimado();
                 }
-                Console.WriteLine($"Eltotal es {suma}");
+                Console.WriteLine($"Total estimado: ${suma}");
                 break;
             case 11:
                 Console.WriteLine("Saliendo...");
-                break;
-            default:
-                Console.WriteLine("Error, opcion invalida");
                 break;
         }
     }
@@ -166,4 +223,3 @@ class Habitacion
         return PrecioporNoche * CantidaddeNoches;
     }
 }
-
